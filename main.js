@@ -22,18 +22,22 @@ function getCityName() {
                     return response.json();
                   }).then(function(data) {
                     for (const day of data.daily) {
-                        console.log(day.weather[0].description)
+                      const date = new Date(day.dt * 1000);
+                      const year = date.getFullYear();
+                      const month = date.getMonth();
+                      const day_month = date.getDate();
 
-                        let body = document.querySelector('body');
-                        let p = document.createElement('p');
-                        let p1 = document.createElement('h2');
-                        p1.textContent = `${day.weather[0].description}`;
-                        p.textContent = `${day.summary}`;
-                        body.appendChild(p1);
-                        body.appendChild(p);
+                      let body = document.querySelector('body');
+                      let p = document.createElement('p');
+                      let p1 = document.createElement('h2');
+                      let p2 = document.createElement('h1');
+                      p2.textContent = `${month}/${day_month}/${year}`;
+                      p1.textContent = `${day.weather[0].description}`;
+                      p.textContent = `${day.summary}`;
+                      body.appendChild(p2);
+                      body.appendChild(p1);
+                      body.appendChild(p);
                     }
-
-                    console.log(data);
 
                   }).catch(function(err) {
                     console.log('Fetch Error :-S', err);
