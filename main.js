@@ -1,60 +1,57 @@
-// API Call
-const API_KEY = "7db4c811b1da67a13f44062f8780a91d"
-const GEO_API = "http://api.openweathermap.org/geo/1.0/direct?q={city name},{state code},{country code}&limit={limit}&appid={API key}"
+requestAnimationFrame('dotenv').config();
 
-const button = document.querySelector('button');
-document.createElement('button'); 
-button.addEventListener('click', getCityName);
+const apiKey = process.env.API_KEY;
 
+const GEO_API = "http://api.openweathermap.org/geo/1.0/direct";
+const API_URL = "https://api.openweathermap.org/data/3.0/onecall";
 
-function getCityName() {
-    if ("geolocation" in navigator) {
-        
+const locationInput = document.getElementById('locationInput');
+const searchButton = document.getElementById('searchButton');
+const locationElement = document.getElementById('location');
+const temperatureElement = document.getElementById('temperature');
+const descriptionElement = document.getElementById('description');
 
-        navigator.geolocation.getCurrentPosition(
-            (position => {
-                const lat = position.coords.latitude;
-                const long = position.coords.longitude;
+locationInput.addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    document.getElementById('searchButton').click();
+  }
+});
 
-                const API_CALL = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${long}&appid=${API_KEY}&exclude=minutely,hourly&units=imperial&lang=en`
+searchButton.addEventListener('click', () => {
+  const location = locationInput.value;
+  if (location) {
+    getWeather(location);
+  }
+});
 
-                fetch(API_CALL).then(function(response) {
-                    return response.json();
-                  }).then(function(data) {
-                    for (const day of data.daily) {
-                      const date = new Date(day.dt * 1000);
-                      const year = date.getFullYear();
-                      const month = date.getMonth();
-                      const day_month = date.getDate();
+function getWeather(location) {
 
-                      let body = document.querySelector('body');
-                      let p = document.createElement('p');
-                      let p1 = document.createElement('h2');
-                      let p2 = document.createElement('h1');
-                      p2.textContent = `${month}/${day_month}/${year}`;
-                      p1.textContent = `${day.weather[0].description}`;
-                      p.textContent = `${day.summary}`;
-                      body.appendChild(p2);
-                      body.appendChild(p1);
-                      body.appendChild(p);
-                    }
+  const GEO_URL = `${GEO_API}?q=${location}&limit=${1}&appid=${apiKey}`
 
-                  }).catch(function(err) {
-                    console.log('Fetch Error :-S', err);
-                  });
-            })
+  fetch(GEO_URL)
+    .then(response => response.json())
+    .then(data => {
+      const lat = data[0].lat
+      const lon = data[0].lon
+      
+      const API_CALL = `${API_URL}?lat=${lat}&lon=${lon}&appid=${apiKey}&exclude=minutely,hourly&units=imperial&lang=en`
 
-            
-        )
-    }
+      fetch(API_CALL)
+        .then(response => response.json())
+        .then(weather => {
+          
+          locationElement.textContent = weather.name;
+          temperatureElement.textContent = `${Math.round(weather.current.temp)}°F`;
+          descriptionElement.textContent = weather.daily[0].summary;
+
+        })
+        .catch(error => {
+          console.error(error);
+        });
+      
+    })
+    .catch(error => {
+      console.error(error);
+    });
 }
-
-
-// Weather App
-
-// App window
-
-// Find Location
-
-// Get Weather for location
-
