@@ -18,7 +18,7 @@ button {
     text-align: center;
     display: inline-block;
     border-radius: 12px;
-    font-size: larger;
+    font-size: large;
     transition-duration: .4s;
 }
 button:hover {
@@ -32,7 +32,8 @@ h1 {
 }
 
 p {
-    line-height: .2;
+    line-height: 30px;
+    font-size: larger;
 }
 
 .container {
@@ -48,10 +49,11 @@ p {
 
 input[type="text"] {
     width: 80%;
-    padding: 10px;
+    padding: 15px;
     margin: 20px 0;
     border: 1px solid #ccc;
     border-radius: 5px;
+    font-size: large;
 }
 
 .weather-info {
